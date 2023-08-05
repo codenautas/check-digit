@@ -37,7 +37,7 @@ var valid = checkdigit("0-86243-680-X", ISBN10);
 The seccond parameter contains the definition of the check digit
 
 
-# CheckDigitParameters
+# `CheckDigitParameters`
 
 
    * `cast`: numeric constructor. Use `Number` for the general case. You can use `BigInt` for special cases. It must match with the class parameter (`number` or `bigint`).
@@ -48,7 +48,7 @@ The seccond parameter contains the definition of the check digit
    * `overflowMap`: caracter map to obtain check digits over the 9. Used to obtain the `"X"` in ISBN.
 
 
-# digitcheckCompute
+# `digitcheckCompute(code, config)`
 
 ```ts
 var incomplete_ean = "123456789041"
@@ -60,6 +60,22 @@ var digit = digitcheckCompute(incomplete_ean, {
     }
 console.log(incomplete_ean + digit); // 1234567890418
 ```
+
+# `checkQualityOfCodeList(string[], relative)`
+
+```ts
+var codeList:string[] = await fs.readFile('codes.txt','utf8');
+
+console.log(checkQualityOfCodeList(codeList, 100));
+```
+
+
+Computes de quality of a list of codes. Computes the % of probability to obtain an existing code when
+types other code an makes some error:
+   * only one type error
+   * two type error
+   * inverting digits
+
 
 
 ## License

@@ -64,7 +64,7 @@ The seccond parameter contains the definition of the check digit
 
 [!--lang:*-->
 
-# CheckDigitParameters
+# `CheckDigitParameters`
 
 <!--lang:es-->
 
@@ -86,7 +86,7 @@ The seccond parameter contains the definition of the check digit
 
 [!--lang:*-->
 
-# digitcheckCompute
+# `digitcheckCompute(code, config)`
 
 ```ts
 var incomplete_ean = "123456789041"
@@ -98,6 +98,33 @@ var digit = digitcheckCompute(incomplete_ean, {
     }
 console.log(incomplete_ean + digit); // 1234567890418
 ```
+
+# `checkQualityOfCodeList(string[], relative)`
+
+```ts
+var codeList:string[] = await fs.readFile('codes.txt','utf8');
+
+console.log(checkQualityOfCodeList(codeList, 100));
+```
+
+<!--lang:es-->
+
+Realiza un control de calidad de la lista de códigos indicando el % de probabildad de obtener otro código
+si al tipear un código se comete:
+  * un error (cambiando un dígito por otro)
+  * dos errores (camabiando un dígito por otro en dos lugares)
+  * la inversión de dos dígitos consecutivos (o dos pares o dos ternas)
+  * la inversión de dos dígitos cualquiera, consecutivos o no (o de dos pares o de dos ternas)
+
+<!--lang:en--]
+
+Computes de quality of a list of codes. Computes the % of probability to obtain an existing code when 
+types other code an makes some error:
+   * only one type error
+   * two type error
+   * inverting digits
+
+[!--lang:*-->
 
 <!--lang:es-->
 
