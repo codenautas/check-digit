@@ -1,0 +1,42 @@
+{
+    "name": "check-digit-compute",
+    "description": "Compute and validate check digit",
+    "version": "0.0.2",
+    "repository": "codenautas/check-digit-compute",
+    "files": [
+        "lib",
+        "doc"
+    ],
+    "main": "lib/check-digit-compute.js",
+    "types": "lib/check-digit-compute.d.ts",
+    "scripts": {
+        "prepare": "tsc -p src/lib",
+        "test": "tsc -p src/lib && tsc -p src/test && nyc mocha test-build-local/test/test",
+        "test-wc": "mocha test-build-local/test/test"
+    },
+    "nyc": {
+        "exclude": [
+            "test-build-local/test"
+        ],
+        "reporter": [
+            "html",
+            "lcov",
+            "text-summary"
+        ],
+        "extension": [
+            ".js",
+            ".ts"
+        ],
+        "sourceMap": true,
+        "instrument": true,
+        "check-coverage": true
+    },
+    "devDependencies": {
+        "@types/mocha": "^10.0.1",
+        "@types/node": "^20.4.8",
+        "expect.js": "^0.3.1",
+        "mocha": "^10.2.0",
+        "nyc": "^15.1.0",
+        "typescript": "^5.1.6"
+    }
+}
