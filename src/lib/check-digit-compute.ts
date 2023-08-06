@@ -10,21 +10,27 @@ export type CheckDigitParameters = {
     overflowMap?:OverflowMap
 }
 
-export function checkdigitCompute(number:Code, params:CheckDigitParameters):number|string|null{
-    var {multipliers, divider, shift, turn, overflowMap} = params;
-    return checkdigitInternal(number, multipliers, divider, shift, turn, overflowMap);
+export const ISBN10: CheckDigitParameters = {
+    multipliers: [9,8,7,6,5,4,3,2,1], 
+    divider: 11,
+    overflowMap: {'10':'X'}
+};
+
+export function checkdigitCompute(partialCode:Code, conf:CheckDigitParameters):number|string|null{
+    var {multipliers, divider, shift, turn, overflowMap} = conf;
+    return checkdigitInternal(partialCode, multipliers, divider, shift, turn, overflowMap);
 }
 
-export function checkdigit(number:Code, params:CheckDigitParameters):boolean{
-    var {multipliers, divider, shift, turn, overflowMap} = params;
-    var numberStr = number.toString();
-    var lastDigit = checkdigitInternal(numberStr.substr(0,numberStr.length-1), multipliers, divider, shift, turn, overflowMap);
-    return lastDigit == numberStr[numberStr.length-1];
+export function checkdigit(code:Code, conf:CheckDigitParameters):boolean{
+    var {multipliers, divider, shift, turn, overflowMap} = conf;
+    var codeStr = code.toString();
+    var lastDigit = checkdigitInternal(codeStr.substr(0,codeStr.length-1), multipliers, divider, shift, turn, overflowMap);
+    return lastDigit == codeStr[codeStr.length-1];
 }
 
-function checkdigitInternal(number:Code, multipliers:number[], divider:number, shift?:number, turn?:boolean, overflowMap?:OverflowMap):number|null|string{
+function checkdigitInternal(code:Code, multipliers:number[], divider:number, shift?:number, turn?:boolean, overflowMap?:OverflowMap):number|null|string{
     var cast = Number;
-    var digitos = number.toString().replace(/-/g,'').split('');
+    var digitos = code.toString().replace(/-/g,'').split('');
     var i = 0;
     var sumador = cast(0);
     while (digitos.length) {
@@ -41,6 +47,37 @@ function checkdigitInternal(number:Code, multipliers:number[], divider:number, s
     if (turn) remainder = divider - remainder;
     if (remainder > 9) return overflowMap ? overflowMap?.[remainder.toString()] || remainder : null;
     return remainder;
+}
+
+export function computePrefixedCodeList(maxCodes:number, prefix:string, conf:CheckDigitParameters|CheckDigitParameters[], startingSufix:number = 0, allowLessCodes:boolean = false){
+    var list = [];
+    var cant = 0;
+    var confA = conf instanceof Array ? conf : [conf];
+    var usefullDigits = confA[0].multipliers.length - prefix.length;
+    if (usefullDigits > 13) throw new RangeError("computePrefixedCodeList: Can't compute more than 13 digits");
+    var expUD = 1;
+    for (var i = 0; i < usefullDigits; i++) expUD *= 10;
+    var sufixLimit = expUD * 2 - 1;
+    var i = expUD + startingSufix;
+    var list = [];
+    // console.log('**********************',{usefullDigits, maxCodes, expUD, maxSufix: sufixLimit, i})
+    while (i <= sufixLimit && cant < maxCodes) {
+        var codePayload = prefix + i.toString().substr(1, usefullDigits);
+        var code = codePayload;
+        for (conf of confA) {
+            var d = checkdigitCompute(codePayload, conf);
+            if (d == null || d.toString().length != 1) { d = null; break; }
+            code += d;
+        }
+        // @ts-expect-error I know that d is set because confA has at least one element
+        if (d != null) {
+            list.push(code);
+            cant++;
+        }
+        i++
+    }
+    if (list.length < maxCodes && !allowLessCodes) throw new Error("computePrefixedCodeList: not enought codes for prefix '"+prefix+"', "+list.length+" generated");
+    return list;
 }
 
 export function checkQualityOfCodeList(list: string[], relative?:number){ 

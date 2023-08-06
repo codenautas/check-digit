@@ -1,4 +1,7 @@
-import { checkdigit, checkdigitCompute, CheckDigitParameters, checkQualityOfCodeList } from "../lib/check-digit-compute";
+import { checkdigit, checkdigitCompute, CheckDigitParameters, checkQualityOfCodeList,
+    computePrefixedCodeList, 
+    ISBN10
+} from "../lib/check-digit-compute";
 
 import * as assert from "assert";
 import { IpcSocketConnectOpts } from "net";
@@ -110,6 +113,55 @@ describe("bigint", function(){
     })
 })
 
+describe("compute code list", function(){
+    it("gets 3 isbn", function(){
+        var list = computePrefixedCodeList(3, "3942", ISBN10, 26)
+        assert.deepEqual(list, [
+            "3942000261",
+            "394200027X",
+            "3942000288",
+        ])
+    })
+    it("gets 11 pain codes and skip digit 10", function(){
+        var CONF = {multipliers: [2,3,5,7],divider: 11}
+        var list = computePrefixedCodeList(11, "", CONF, 1000)
+        assert.deepEqual(list, [
+            '10007',
+            '10019',
+            '10020',
+            '10032',
+            '10044',
+            '10056',
+            '10068',
+            // hole here! skiped sufix! GOOD!
+            '10081',
+            '10093',
+            // hole here! skiped sufix! GOOD!
+            '10111',
+            '10123'
+        ])
+        for (var code of list) checkdigit(code, CONF)
+    })
+    it("rejects more than 13 digits", function(){
+        const CONF: CheckDigitParameters = {
+            multipliers: [1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7], 
+            divider: 11
+        }
+        assert.throws(()=>{
+            computePrefixedCodeList(1,"1",CONF);
+        }, new RangeError("computePrefixedCodeList: Can't compute more than 13 digits"))
+    })
+    it("rejects less than expected code list length", function(){
+        const CONF: CheckDigitParameters = {
+            multipliers: [1, 3, 7, 1], 
+            divider: 11,
+        }
+        assert.throws(()=>{
+            var list = computePrefixedCodeList(10,"987",CONF);
+        }, new Error("computePrefixedCodeList: not enought codes for prefix '987', 9 generated"))
+    })
+})
+
 describe("cuality measure", function(){
     var shortList = [
         "12340089",
@@ -158,18 +210,7 @@ describe("cuality measure", function(){
             divider: 11,
             turn: true
         }
-        var cant = 0;
-        var i = 1000;
-        var list = [];
-        while(i<=9999){
-            var d1 = checkdigitCompute(i, CONF);
-            if(d1 != null){
-                var code = i + "" + d1;
-                list.push(code);
-                cant++;
-            }
-            i++
-        }
+        var list = computePrefixedCodeList(9999, "", CONF, 1000, true);
         var result = checkQualityOfCodeList(list, 100);
         assert.deepEqual(result,{
             anySwap: {
@@ -196,19 +237,7 @@ describe("cuality measure", function(){
             multipliers: [3,4,5,9],
             divider: 11
         }
-        var cant = 0;
-        var i = 1000;
-        var list = [];
-        while(i<=9999){
-            var d1 = checkdigitCompute(i, CONF1);
-            var d2 = checkdigitCompute(i, CONF2);
-            if(d1 != null && d2 != null){
-                var code = i + "" + d1 + d2;
-                list.push(code);
-                cant++;
-            }
-            i++
-        }
+        var list = computePrefixedCodeList(9999, "", [CONF1, CONF2], 1000, true);
         var result = checkQualityOfCodeList(list, 100);
         assert.deepEqual(result,{
             anySwap: {
