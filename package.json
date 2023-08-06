@@ -1,7 +1,7 @@
 {
     "name": "check-digit-compute",
     "description": "Compute and validate check digit",
-    "version": "0.0.3",
+    "version": "0.1.0",
     "repository": "codenautas/check-digit-compute",
     "files": [
         "lib",
