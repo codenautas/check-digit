@@ -44,8 +44,7 @@ Compute the check digit of new codes.
 [!--lang:*-->
 
 ```ts
-const ISBN10: CheckDigitParameters<number> = {
-    cast: Number, 
+const ISBN10: CheckDigitParameters = {
     multipliers: [9,8,7,6,5,4,3,2,1], 
     divider: 11,
     overflowMap: {'10':'X'}
@@ -64,11 +63,10 @@ The seccond parameter contains the definition of the check digit
 
 [!--lang:*-->
 
-# `CheckDigitParameters`
+# Type `CheckDigitParameters`
 
 <!--lang:es-->
 
-   * `cast`: constructor del tipo numérico. Se usa `Number` en general. Se puede usar también `BigInt`. Debe coincidir con el parámetro de clase (`number` o `bigint`).
    * `multipliers`: secuencia de dígitos empezando por el que multiplicará al dígito menos significativo.
    * `divider`: módulo (divisor final).
    * `shift`: desplazamiento del dígito verificador.
@@ -77,7 +75,6 @@ The seccond parameter contains the definition of the check digit
 
 <!--lang:en--]
 
-   * `cast`: numeric constructor. Use `Number` for the general case. You can use `BigInt` for special cases. It must match with the class parameter (`number` or `bigint`).
    * `multipliers`: numeric secuence of digit multipliers starting from the less significative digit of the code.
    * `divider`: modulus (divisor of the final sum)
    * `shift`: shift of the result
@@ -99,7 +96,7 @@ var digit = digitcheckCompute(incomplete_ean, {
 console.log(incomplete_ean + digit); // 1234567890418
 ```
 
-# `checkQualityOfCodeList(string[], relative)`
+# `checkQualityOfCodeList(listOfCodes, relative)`
 
 ```ts
 var codeList:string[] = await fs.readFile('codes.txt','utf8');
@@ -126,7 +123,7 @@ types other code an makes some error:
 
 [!--lang:*-->
 
-## `computePrefixedCodeList(maxCodes, prefix, conf, startingSufix, allowLessCodes)`
+## `computePrefixedCodeList(maxCodes, prefix, conf, startingSufix, lastSufix, allowLessCodes)`
 
 <!--lang:es-->
 

@@ -23,8 +23,7 @@ Compute the check digit of new codes.
 
 
 ```ts
-const ISBN10: CheckDigitParameters<number> = {
-    cast: Number,
+const ISBN10: CheckDigitParameters = {
     multipliers: [9,8,7,6,5,4,3,2,1],
     divider: 11,
     overflowMap: {'10':'X'}
@@ -37,10 +36,9 @@ var valid = checkdigit("0-86243-680-X", ISBN10);
 The seccond parameter contains the definition of the check digit
 
 
-# `CheckDigitParameters`
+# Type `CheckDigitParameters`
 
 
-   * `cast`: numeric constructor. Use `Number` for the general case. You can use `BigInt` for special cases. It must match with the class parameter (`number` or `bigint`).
    * `multipliers`: numeric secuence of digit multipliers starting from the less significative digit of the code.
    * `divider`: modulus (divisor of the final sum)
    * `shift`: shift of the result
@@ -61,7 +59,7 @@ var digit = digitcheckCompute(incomplete_ean, {
 console.log(incomplete_ean + digit); // 1234567890418
 ```
 
-# `checkQualityOfCodeList(string[], relative)`
+# `checkQualityOfCodeList(listOfCodes, relative)`
 
 ```ts
 var codeList:string[] = await fs.readFile('codes.txt','utf8');
@@ -77,7 +75,7 @@ types other code an makes some error:
    * inverting digits
 
 
-## `computePrefixedCodeList(maxCodes, prefix, conf, startingSufix, allowLessCodes)`
+## `computePrefixedCodeList(maxCodes, prefix, conf, startingSufix, lastSufix, allowLessCodes)`
 
 
 Generates a list of codes using a check digit `conf`.
