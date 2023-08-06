@@ -77,6 +77,43 @@ types other code an makes some error:
    * inverting digits
 
 
+## `computePrefixedCodeList(maxCodes, prefix, conf, startingSufix, allowLessCodes)`
+
+
+Generates a list of codes using a check digit `conf`.
+You must specify the maximum number of codes that you want to generate and a prefix (it can be `""` to no prefix).
+You can also specify the initial number to generate and the last number to generate.
+If you not, 0 is the first and the last is 9999 (with many nines to complete the code).
+The number of digits to generate in each code will depend on the number of multipliers of the configuration.
+If you cannot generate as many codes as `maxCodes` you will get an error
+unless `true` is passed in the `allowLesCodes` parameter.
+
+
+```ts
+// GET 8000 labels starting with 1000 ensuring not grater than 9900
+import { CheckDigitParameters, checkQualityOfCodeList, computePrefixedCodeList } from "../lib/check-digit-compute";
+import { promises as fs } from "fs";
+
+const CONF: CheckDigitParameters = {
+    multipliers: [2,3,4,7],
+    divider: 11
+}
+
+const FIRST_LABEL = 1000;
+const LAST_LABEL = 9900;
+
+async function getList(){
+    var allList = computePrefixedCodeList(8000, "", CONF, FIRST_LABEL, LAST_LABEL);
+    console.log("List computed");
+    var writing = fs.writeFile("local-codes.txt", allList.join("\n")).then(_=>console.log("List saved."));
+    console.log('Quality report:', checkQualityOfCodeList(allList, 100));
+    await writing;
+}
+
+getList();
+
+```
+
 
 ## License
 

@@ -142,6 +142,29 @@ describe("compute code list", function(){
         ])
         for (var code of list) checkdigit(code, CONF)
     })
+    it("gets additive codes from 0 to 19", function(){
+        var CONF = {multipliers: [2,3,5,7],divider: 13}
+        var list = computePrefixedCodeList(30, "110", CONF, 0, 19, true)
+        assert.deepEqual(list, [
+            '11011',
+            '11023',
+            '11035',
+            '11047',
+            '11059',
+            '11070',
+            '11082',
+            '11094',
+            '11102',
+            '11114',
+            '11126',
+            '11138',
+            '11161',
+            '11173',
+            '11185',
+            '11197'            
+        ])
+        for (var code of list) checkdigit(code, CONF)
+    })
     it("rejects more than 13 digits", function(){
         const CONF: CheckDigitParameters = {
             multipliers: [1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7], 
@@ -210,7 +233,7 @@ describe("cuality measure", function(){
             divider: 11,
             turn: true
         }
-        var list = computePrefixedCodeList(9999, "", CONF, 1000, true);
+        var list = computePrefixedCodeList(9999, "", CONF, 1000, null, true);
         var result = checkQualityOfCodeList(list, 100);
         assert.deepEqual(result,{
             anySwap: {
@@ -237,7 +260,7 @@ describe("cuality measure", function(){
             multipliers: [3,4,5,9],
             divider: 11
         }
-        var list = computePrefixedCodeList(9999, "", [CONF1, CONF2], 1000, true);
+        var list = computePrefixedCodeList(9999, "", [CONF1, CONF2], 1000, null, true);
         var result = checkQualityOfCodeList(list, 100);
         assert.deepEqual(result,{
             anySwap: {

@@ -12,7 +12,9 @@
     "scripts": {
         "prepare": "tsc -p src/lib",
         "test": "tsc -p src/lib && tsc -p src/test && nyc mocha test-build-local/test/test",
-        "test-wc": "mocha test-build-local/test/test"
+        "test-wc": "mocha test-build-local/test/test",
+        "sample-byarea": "tsc -p src/samples && node samples-build-local/samples/compute-codelist-byarea",
+        "sample-labels": "tsc -p src/samples && node samples-build-local/samples/compute-codelist-labels"
     },
     "nyc": {
         "exclude": [

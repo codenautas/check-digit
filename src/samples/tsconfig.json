@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "outDir": "../../samples-build-local",
+        "strict": true,
+        "target": "ES2020",
+        "module": "CommonJS",
+        "noImplicitAny": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
+        "noUnusedLocals": false
+    }
+}

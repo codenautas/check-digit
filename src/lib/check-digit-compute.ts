@@ -49,20 +49,23 @@ function checkdigitInternal(code:Code, multipliers:number[], divider:number, shi
     return remainder;
 }
 
-export function computePrefixedCodeList(maxCodes:number, prefix:string, conf:CheckDigitParameters|CheckDigitParameters[], startingSufix:number = 0, allowLessCodes:boolean = false){
+export function computePrefixedCodeList(maxCodes:number, prefix:string, conf:CheckDigitParameters|CheckDigitParameters[], startingSufix:number = 0, lastSufix:number|null = null, allowLessCodes:boolean = false):string[]{
     var list = [];
     var cant = 0;
     var confA = conf instanceof Array ? conf : [conf];
     var usefullDigits = confA[0].multipliers.length - prefix.length;
     if (usefullDigits > 13) throw new RangeError("computePrefixedCodeList: Can't compute more than 13 digits");
+    var baseCode = Number("1" + prefix); 
     var expUD = 1;
-    for (var i = 0; i < usefullDigits; i++) expUD *= 10;
-    var sufixLimit = expUD * 2 - 1;
-    var i = expUD + startingSufix;
+    for (var i = 0; i < usefullDigits; i++) { expUD *= 10; baseCode *= 10; }
+    if (lastSufix == null) {
+        lastSufix = expUD - 1;
+    }
+    var i = startingSufix;
     var list = [];
     // console.log('**********************',{usefullDigits, maxCodes, expUD, maxSufix: sufixLimit, i})
-    while (i <= sufixLimit && cant < maxCodes) {
-        var codePayload = prefix + i.toString().substr(1, usefullDigits);
+    while (i <= lastSufix && cant < maxCodes) {
+        var codePayload = (baseCode + i).toString().substring(1);
         var code = codePayload;
         for (conf of confA) {
             var d = checkdigitCompute(codePayload, conf);

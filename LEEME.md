@@ -126,6 +126,58 @@ types other code an makes some error:
 
 [!--lang:*-->
 
+## `computePrefixedCodeList(maxCodes, prefix, conf, startingSufix, allowLessCodes)`
+
+<!--lang:es-->
+
+Genera una lista de códigos utilizando una `conf`iguración de dígito verificador.
+Se debe especificar la cantidad máxima de códigos que se desean generar,
+un prefio (puede ser `""` para no poner prefijo). 
+Se puede especificar también el número inicial y final a generar;
+si no se especifican se empieza de 0 y se termina en 9999 
+(con tantos nueves como sea necesario para completar el código).
+La cantidad de dígitos a generar en cada código dependerá de la cantidad de multiplicadores
+de la configuración. 
+Si no se pueden generar tantos códigos como `maxCodes` se obtendrá un error 
+salvo que se pase `true` en el parámetro `allowLesCodes`.
+
+<!--lang:en--]
+
+Generates a list of codes using a check digit `conf`.
+You must specify the maximum number of codes that you want to generate and a prefix (it can be `""` to no prefix).
+You can also specify the initial number to generate and the last number to generate.
+If you not, 0 is the first and the last is 9999 (with many nines to complete the code). 
+The number of digits to generate in each code will depend on the number of multipliers of the configuration.
+If you cannot generate as many codes as `maxCodes` you will get an error 
+unless `true` is passed in the `allowLesCodes` parameter.
+
+[!--lang:*-->
+
+```ts
+// GET 8000 labels starting with 1000 ensuring not grater than 9900
+import { CheckDigitParameters, checkQualityOfCodeList, computePrefixedCodeList } from "../lib/check-digit-compute";
+import { promises as fs } from "fs";
+
+const CONF: CheckDigitParameters = {
+    multipliers: [2,3,4,7], 
+    divider: 11
+}
+
+const FIRST_LABEL = 1000;
+const LAST_LABEL = 9900;
+
+async function getList(){
+    var allList = computePrefixedCodeList(8000, "", CONF, FIRST_LABEL, LAST_LABEL);
+    console.log("List computed");
+    var writing = fs.writeFile("local-codes.txt", allList.join("\n")).then(_=>console.log("List saved."));
+    console.log('Quality report:', checkQualityOfCodeList(allList, 100));
+    await writing;
+}
+
+getList();
+
+```
+
 <!--lang:es-->
 
 ## Licencia
