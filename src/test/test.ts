@@ -4,17 +4,16 @@ import * as assert from "assert";
 import { IpcSocketConnectOpts } from "net";
 
 describe("ISBN10", function(){
-    const ISBN10: CheckDigitParameters<number> = {
-        cast: Number, 
+    const ISBN10: CheckDigitParameters = {
         multipliers: [9,8,7,6,5,4,3,2,1], 
         divider: 11,
         overflowMap: {'10':'X'}
     };
-// console.log(checkdigit(isbnBook2, BigInt, [9n,8n,7n,6n,5n,4n,3n,2n,1n], 11n), "= 4?");    it("isbn", function(){
     it("compute isbn check digit", function(){
-        var isbnBook1_whitout_chd = "007140638" // 7
+        var isbnBook1_whitout_chd = "007140638" 
+        var expected = 7;
         var result = checkdigitCompute(isbnBook1_whitout_chd, ISBN10);
-        assert.equal(result, 7);
+        assert.equal(result, expected);
     })
     it("isbn check digit", function(){
         var isbnBook2 = "0465050654"
@@ -32,9 +31,7 @@ describe("ISBN10", function(){
 })
 
 describe("CUIT", function(){
-    const CUIT: CheckDigitParameters<number> = {
-        cast: Number,
-        // multipliers: [5,4,3,2,7,6,5,4,3,2],
+    const CUIT: CheckDigitParameters = {
         multipliers: [2,3,4,5,6,7,2,3,4,5],
         turn: true,
         divider: 11,
@@ -52,15 +49,15 @@ describe("CUIT", function(){
 })
 
 describe("EAN13", function(){
-    const EAN13: CheckDigitParameters<number> = {
-        cast: Number,
+    const EAN13: CheckDigitParameters = {
         multipliers: [3,1,3,1,3,1,3,1,3,1,3,1],
         turn: true,
         divider: 10,
     }
     it("compute last digit", function(){
-        var ean_wchd = "123456789041"; //8
-        var result = checkdigitCompute(ean_wchd, EAN13);
+        var ean_wchd = "123456789041"
+        var expected = 8
+        var result = checkdigitCompute(ean_wchd, EAN13)
         assert.equal(result, 8)
     });
     it("checks EAN13", function(){
@@ -71,11 +68,10 @@ describe("EAN13", function(){
 })
 
 describe("bigint", function(){
-    const CONF: CheckDigitParameters<bigint> = {
-        cast: BigInt, 
-        multipliers: [1n, 3n, 7n, 1n, 3n, 7n, 1n, 3n, 7n, 1n, 3n, 7n, 1n, 3n, 7n, 1n, 3n, 7n], 
-        divider: 11n,
-        shift: 1n
+    const CONF: CheckDigitParameters = {
+        multipliers: [1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7], 
+        divider: 11,
+        shift: 1
     }
     it("all ceros", function(){
         var code = "000000000000000000"
@@ -89,14 +85,8 @@ describe("bigint", function(){
     })
     it("check digit overflow valid", function(){
         var code = "123456789012345679"
-        var result = checkdigitCompute(code, {
-            cast: BigInt, 
-            multipliers: [1n, 3n, 7n, 1n, 3n, 7n, 1n, 3n, 7n, 1n, 3n, 7n, 1n, 3n, 7n, 1n, 3n, 7n], 
-            divider: 11n,
-            shift: 1n, 
-            overflowMap:{}
-        })
-        assert.equal(result, 10n);
+        var result = checkdigitCompute(code, {...CONF, overflowMap:{}})
+        assert.equal(result, 10);
     })
     it("check digit overflow as null", function(){
         var code = "123456789012345679"
@@ -111,12 +101,12 @@ describe("bigint", function(){
     it("bigint 1", function(){
         var code = 1n
         var result = checkdigitCompute(code, CONF)
-        assert.equal(result, 2n);
+        assert.equal(result, 2);
     })
     it("bigint all ones", function(){
         var code = 111111111111111111n
         var result = checkdigitCompute(code, CONF)
-        assert.equal(result, 1n);
+        assert.equal(result, 1);
     })
 })
 
@@ -163,8 +153,7 @@ describe("cuality measure", function(){
         })
     })
     it("check a long list with 1 check digit", function(){
-        const CONF:CheckDigitParameters<number> = {
-            cast: Number, 
+        const CONF:CheckDigitParameters = {
             multipliers: [2,3,5,7],
             divider: 11,
             turn: true
@@ -198,14 +187,12 @@ describe("cuality measure", function(){
         })
     })
     it("check a long list with 2 check digit", function(){
-        const CONF1:CheckDigitParameters<number> = {
-            cast: Number, 
+        const CONF1:CheckDigitParameters = {
             multipliers: [2,3,4,7],
             divider: 11,
             shift: 3
         }
-        const CONF2:CheckDigitParameters<number> = {
-            cast: Number, 
+        const CONF2:CheckDigitParameters = {
             multipliers: [3,4,5,9],
             divider: 11
         }
