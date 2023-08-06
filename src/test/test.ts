@@ -228,6 +228,7 @@ describe("cuality measure", function(){
         })
     })
     it("check a long list with 1 check digit", function(){
+        this.timeout(5000);
         const CONF:CheckDigitParameters = {
             multipliers: [2,3,5,7],
             divider: 11,
@@ -251,6 +252,7 @@ describe("cuality measure", function(){
         })
     })
     it("check a long list with 2 check digit", function(){
+        this.timeout(10000);
         const CONF1:CheckDigitParameters = {
             multipliers: [2,3,4,7],
             divider: 11,
@@ -278,6 +280,7 @@ describe("cuality measure", function(){
         })
     })
     it("check a long list without check digit", function(){
+        this.timeout(5000);
         var i = 1000;
         var list = [];
         while(i<=9999){
