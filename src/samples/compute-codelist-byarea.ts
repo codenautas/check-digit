@@ -1,7 +1,7 @@
 /*
 # RUN
 ```sh
-npm run sample-getlist
+npm run sample-byarea
 ```
 */
 
